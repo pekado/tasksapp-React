@@ -11,7 +11,7 @@ const ProjectsList = () => {
     getProjects();
   }, []);
   //revisar si hay projects
-  if (projects.length === 0) return null;
+  if (projects.length === 0) return <p>No projects yet</p>;
   return (
     <ul className="listado-proyectos">
       {projects.map(project => (
