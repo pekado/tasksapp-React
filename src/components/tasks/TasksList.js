@@ -1,5 +1,7 @@
 import React, { Fragment, useContext } from "react";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import projectContext from "../../context/projects/projectContext";
+import TasksContext from "../../context/tasks/tasksContext";
 import Task from "./Task";
 
 const TasksList = () => {
@@ -7,28 +9,39 @@ const TasksList = () => {
   const projectsContext = useContext(projectContext);
   //deracturing states(de lado izquierdo) y funciones(lado derecho)
   const { project, deleteProject } = projectsContext;
-  //si no hay proyecto seleccionado
-  if(!project) return <h2>Pick a project</h2>
-  //array destructuring para extraer el proyecto actuak
-  const [openProject] = project
 
-  const tasks = [
-    { name: "pick framework", state: true },
-    { name: "find partners", state: false },
-    { name: "get a loan", state: true }
-  ];
+  //obtener tasks del projecto
+  const taskContext = useContext(TasksContext);
+  const { projecttasks } = taskContext;
+  if (!project) return <h2>Pick a project</h2>;
+  //array destructuring para extraer el proyecto actual
+  const [openProject] = project;
+
   return (
     <Fragment>
       <h1>Proyecto: {openProject.name}</h1>
       <ul className="listado-tareas">
-        {tasks.length === 0 ? (
+        {projecttasks.length === 0 ? (
           <li className="tarea">
             <p>No tasks yet</p>
           </li>
         ) : (
-          tasks.map(task => <Task task={task} />)
+          <TransitionGroup>
+            {projecttasks.map(task => (
+              <CSSTransition 
+                key={task.id} 
+                timeout={300} 
+                classNames="tarea">
+                <Task task={task} />
+              </CSSTransition>
+            ))}
+          </TransitionGroup>
         )}
-        <button type="button" className="btn btn-primario" onClick={() => deleteProject(openProject.id)}>
+        <button
+          type="button"
+          className="btn btn-primario"
+          onClick={() => deleteProject(openProject.id)}
+        >
           Delete Project
         </button>
       </ul>

@@ -1,18 +1,29 @@
 import React, { useContext } from 'react'
 import projectContext from "../../context/projects/projectContext";
+import TasksContext from "../../context/tasks/tasksContext";
 
 const Project = ({project}) => {
    //obtener state de proyectos
    const projectsContext = useContext(projectContext);
    //deracturing states(de lado izquierdo) y funciones(lado derecho)
    const { openProject } = projectsContext;
-   //state para nuevo projecto
+   //obtener funcion del context de tasks
+   const taskContext  = useContext(TasksContext)
+   const { getTasks } = taskContext;
+
+
+   //funciona para agregar proyecto actual
+   const selectProject = id => {
+        openProject(id)//fijar proyecto actual
+        getTasks(id); //filtrar tareas al hacer click
+   }
+
     return ( 
         <li>
             <button
             type="button"
             className="btn btn-blank"
-            onClick={() => openProject(project.id)}>
+            onClick={() => selectProject(project.id)}>
             {project.name}
             </button>
         </li>
