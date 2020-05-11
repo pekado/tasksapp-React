@@ -9,21 +9,26 @@ const FormTasks = () => {
   const { project } = projectsContext;
 
   //obtener funcion del context de tasks
-  const taskContext  = useContext(TasksContext)
-  const { createTask, validateTask, taskerror, getTasks, selectedtask,
-    editTask } = taskContext; 
+  const taskContext = useContext(TasksContext);
+  const {
+    createTask,
+    validateTask,
+    taskerror,
+    getTasks,
+    selectedtask,
+    editTask
+  } = taskContext;
 
   //effect detecta tarea seleccionada
   useEffect(() => {
-    if(selectedtask !== null){
-      setTask(selectedtask)
-    }else {
+    if (selectedtask !== null) {
+      setTask(selectedtask);
+    } else {
       setTask({
-        name: ''
-      })
+        name: ""
+      });
     }
-   
-  }, [selectedtask])
+  }, [selectedtask]);
   //state form
 
   const [task, setTask] = useState({
@@ -31,7 +36,7 @@ const FormTasks = () => {
   });
 
   //obtener nombre del proyecto
-  const { name } = task
+  const { name } = task;
   //si no hay proyecto seleccionado
   if (!project) return null;
   //array destructuring para extraer el proyecto actuak
@@ -47,29 +52,29 @@ const FormTasks = () => {
   const onSubmit = event => {
     event.preventDefault();
     //validar
-    if(name.trim() === ''){
-      validateTask()
+    if (name.trim() === "") {
+      validateTask();
       return;
     }
     //revisar si edita o agrega tarea
-    if(selectedtask == null) {
-       //agregar la nueva taraea
-    task.projectId = openProject.id;
-    task.state = false;
-
-    createTask(task);
-    }else {
+    if (selectedtask == null) {
+      //agregar la nueva taraea
+      task.projectId = openProject.id;
+      task.state = false;
+      createTask(task);
+    } else {
       //actualiza tarea existente
-      editTask(task)
+      editTask(task);
     }
-    
-   
     //obtener y filtrar tareas
-    getTasks(openProject.id)
+    setTimeout(() => {
+      getTasks(openProject.id);
+    }, 2000);
+    
     //resetear form
     setTask({
-      name: ''
-    })
+      name: ""
+    });
   };
   return (
     <div className="formulario">
@@ -88,11 +93,13 @@ const FormTasks = () => {
           <input
             type="submit"
             className="btn btn-primario btn-submit btn-block"
-            value={selectedtask ? 'Edit task' : 'Add task'}
+            value={selectedtask ? "Edit task" : "Add task"}
           />
         </div>
       </form>
-      {taskerror ? <p className="mensaje error">Give your task a name, please.</p>: null }
+      {taskerror ? (
+        <p className="mensaje error">Give your task a name, please.</p>
+      ) : null}
     </div>
   );
 };

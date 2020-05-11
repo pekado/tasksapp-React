@@ -1,6 +1,7 @@
 import React, { useReducer } from "react";
 import TasksContext from "./tasksContext";
 import TasksReducer from "./tasksReducer";
+import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import {
   PROJECT_TASKS,
@@ -11,6 +12,7 @@ import {
   ACTUAL_TASK,
   EDIT_TASK
 } from "../../types";
+
 
 const TasksState = props => {
   const initialState = {
@@ -37,27 +39,43 @@ const TasksState = props => {
   // funciones
 
   //obtener tareas de un proyecto
-  const getTasks = projectId => {
-    dispatch({
-      type: PROJECT_TASKS,
-      payload: projectId
-    });
+  const getTasks = async project => {
+    console.log(project);
+    try {
+      const results = await axios(
+        "https://task-3ff4d.firebaseio.com/tasks.json"
+      );
+      const response = await Object.values(results.data).filter(function(task) {
+        return task.projectId === project;
+      });
+      dispatch({
+        type: PROJECT_TASKS,
+        payload: response
+      });
+    } catch (error) {}
   };
   //crear tarea al proyecto
-  const createTask = task => {
+  const createTask = async task => {
+    try {
       task.id = uuidv4();
-    dispatch({
-      type: CREATE_TASK,
-      payload: task
-    });
+      const results = await axios.post(
+        "https://task-3ff4d.firebaseio.com/tasks.json",
+        task
+      );
+      console.log(results);
+      dispatch({
+        type: CREATE_TASK,
+        payload: Object.value(results)
+      });
+    } catch (error) {}
   };
   //trae taer par editar
   const actualTask = task => {
-      dispatch({
-          type: ACTUAL_TASK,
-          payload: task
-      })
-  }
+    dispatch({
+      type: ACTUAL_TASK,
+      payload: task
+    });
+  };
 
   //valida y muestra un error
   const validateTask = () => {
@@ -76,18 +94,18 @@ const TasksState = props => {
 
   //marcar tarea como terminada
   const completedTask = task => {
-      dispatch({
-          type: TASK_STATE,
-          payload: task
-      })
-  }
+    dispatch({
+      type: TASK_STATE,
+      payload: task
+    });
+  };
   //EDITA MODIFICA TAREA
-  const editTask = (task) => {
-      dispatch({
-          type: EDIT_TASK,
-          payload: task
-      })
-  }
+  const editTask = task => {
+    dispatch({
+      type: EDIT_TASK,
+      payload: task
+    });
+  };
 
   return (
     <TasksContext.Provider

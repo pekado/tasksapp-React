@@ -24,7 +24,7 @@ const NewProject = () => {
     event.preventDefault();
     //validar name
     if (name === "") {
-      showError()
+      showError();
       return;
     }
     //agregar al state
@@ -32,7 +32,7 @@ const NewProject = () => {
     //reiniciar form
     setProject({
       name: ""
-    })
+    });
   };
   const seeForm = () => {
     showForm();
@@ -64,10 +64,9 @@ const NewProject = () => {
           />
         </form>
       ) : null}
-      {formError 
-      ? <p className="mensaje error">Your project needs a name</p>
-      : null
-      }
+      {formError ? (
+        <p className="mensaje error">Your project needs a name</p>
+      ) : null}
     </Fragment>
   );
 };

@@ -13,9 +13,7 @@ export default (state, action) => {
     case PROJECT_TASKS:
       return {
         ...state,
-        projecttasks: state.tasks.filter(
-          task => task.projectId === action.payload
-        )
+        projecttasks: action.payload
       };
     case CREATE_TASK:
       return {
@@ -38,18 +36,19 @@ export default (state, action) => {
         ...state,
         taskstate: true
       };
-      case ACTUAL_TASK:
-          return{
-              ...state,
-              selectedtask: action.payload,
-          }
-          case EDIT_TASK:
-              return {
-                  ...state,
-                  tasks: state.tasks.map(task => task.id === action.payload.id ? 
-                    action.payload : task),
-                    selectedtask: null
-              }
+    case ACTUAL_TASK:
+      return {
+        ...state,
+        selectedtask: action.payload
+      };
+    case EDIT_TASK:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload.id ? action.payload : task
+        ),
+        selectedtask: null
+      };
     default:
       return state;
   }

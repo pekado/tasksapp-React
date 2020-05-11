@@ -16,12 +16,12 @@ const TasksList = () => {
   if (!project) return <h2>Pick a project</h2>;
   //array destructuring para extraer el proyecto actual
   const [openProject] = project;
-
+  
   return (
     <Fragment>
       <h1>Proyecto: {openProject.name}</h1>
       <ul className="listado-tareas">
-        {projecttasks.length === 0 ? (
+        {projecttasks === null ? (
           <li className="tarea">
             <p>No tasks yet</p>
           </li>
