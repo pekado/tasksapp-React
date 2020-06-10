@@ -1,9 +1,9 @@
 import React, { useReducer } from "react";
-import { v4 as uuidv4 } from "uuid";
 import projectContext from "./projectContext";
 import projectReducer from "./projectReducer";
-import axios from "axios";
+import axiosClient from '../../config/axios'
 import {
+  PROJECT_ERROR,
   FORM_PROJECT,
   GET_PROJECTS,
   ADD_PROJECT,
@@ -18,7 +18,8 @@ const ProjectState = props => {
     projects: [],
     newProjectForm: false,
     formError: false,
-    project: null
+    project: null,
+    message: null
   };
   //dispatch para ejecutar acciones
   const [state, dispatch] = useReducer(projectReducer, initialState);
@@ -31,56 +32,71 @@ const ProjectState = props => {
   //obtener projects
   const getProjects = async () => {
     try {
-      const results = await axios(
-        "https://task-3ff4d.firebaseio.com/projects.json"
-      );
+      const result = await axiosClient.get('/api/projects');
          dispatch({
         type: GET_PROJECTS,
-        payload: Object.values(results.data)
+        payload: result.data.projects
       });
     } catch (error) {
-      console.log("Network Error");
+      const alert = {
+        msg: 'Something went wrong!',
+        category: 'alerta-error'
+      }
+      dispatch({
+        type: PROJECT_ERROR,
+        payload: alert
+      })
     }
   };
   //agregar proyecto
   const addProject = async project => {
     try {
-      project.id = uuidv4();
-      const resultado = await axios.post(
-        "https://task-3ff4d.firebaseio.com/projects.json",
-        project
-      );
-      console.log(resultado);
+      const result = await axiosClient.post('/api/projects', project)
+      console.log(result)
       dispatch({
         type: ADD_PROJECT,
-        payload: project
+        payload: result.data
       });
     } catch (error) {
-      console.log(error);
+      const alert = {
+        msg: 'Something went wrong!',
+        category: 'alerta-error'
+      }
+      dispatch({
+        type: PROJECT_ERROR,
+        payload: alert
+      })
     }
-    // project.id = uuidv4();
-    //insertar el proyecto en el state
+  
   };
   //selecciona projecto con un click
-  const openProject = projectId => {
+  const openProject =  (projectId) => {
+  
     dispatch({
       type: OPEN_PROJECT,
       payload: projectId
     });
+ 
   };
 
   //ELIMINA PORYECTO
   const deleteProject = async projectId => {
     try {
-      const resultado = await axios.delete(
-        "https://task-3ff4d.firebaseio.com/projects.json",
-        projectId
-      );
+     await axiosClient.delete(`/api/projects/${projectId}`);
       dispatch({
         type: DELETE_PROJECT,
         payload: projectId
       });
-    } catch (error) {}
+    } catch (error) {
+      const alert = {
+        msg: 'Something went wrong!',
+        category: 'alerta-error'
+      }
+      dispatch({
+        type: PROJECT_ERROR,
+        payload: alert
+      })
+    }
   };
 
   //validar form por errores
@@ -96,6 +112,7 @@ const ProjectState = props => {
         form: state.form,
         formError: state.formError,
         project: state.project,
+        message: state.message,
         showForm,
         getProjects,
         addProject,

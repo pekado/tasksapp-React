@@ -1,33 +1,20 @@
 import React, { useReducer } from "react";
 import TasksContext from "./tasksContext";
 import TasksReducer from "./tasksReducer";
-import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
+import axiosClient from "../../config/axios";
 import {
   PROJECT_TASKS,
   CREATE_TASK,
   VALIDATE_TASK,
   DELETE_TASK,
-  TASK_STATE,
   ACTUAL_TASK,
-  EDIT_TASK
+  EDIT_TASK,
+  CLEAR_TASK
 } from "../../types";
-
 
 const TasksState = props => {
   const initialState = {
-    tasks: [
-      { id: 1, name: "pick framework", state: true, projectId: 1 },
-      { id: 2, name: "find partners", state: false, projectId: 2 },
-      { id: 3, name: "get a loan", state: true, projectId: 3 },
-      { id: 4, name: "pick framework", state: true, projectId: 1 },
-      { id: 5, name: "find partners", state: false, projectId: 2 },
-      { id: 6, name: "get a loan", state: true, projectId: 2 },
-      { id: 7, name: "pick framework", state: true, projectId: 3 },
-      { id: 8, name: "find partners", state: false, projectId: 3 },
-      { id: 9, name: "get a loan", state: true, projectId: 1 }
-    ],
-    projecttasks: null,
+    projecttasks: [],
     taskerror: false,
     taskstate: false,
     selectedtask: null
@@ -40,32 +27,23 @@ const TasksState = props => {
 
   //obtener tareas de un proyecto
   const getTasks = async project => {
-    console.log(project);
     try {
-      const results = await axios(
-        "https://task-3ff4d.firebaseio.com/tasks.json"
-      );
-      const response = await Object.values(results.data).filter(function(task) {
-        return task.projectId === project;
-      });
+      const results = await axiosClient.get("/api/tasks", { params: { project}});
       dispatch({
         type: PROJECT_TASKS,
-        payload: response
+        payload: results.data.tasks
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
   };
   //crear tarea al proyecto
   const createTask = async task => {
     try {
-      task.id = uuidv4();
-      const results = await axios.post(
-        "https://task-3ff4d.firebaseio.com/tasks.json",
-        task
-      );
-      console.log(results);
+      const results = await axiosClient.post("/api/tasks", task);
       dispatch({
         type: CREATE_TASK,
-        payload: Object.value(results)
+        payload: task
       });
     } catch (error) {}
   };
@@ -85,32 +63,44 @@ const TasksState = props => {
   };
 
   //eliminar tarea por id
-  const deleteTask = id => {
-    dispatch({
-      type: DELETE_TASK,
-      payload: id
-    });
+  const deleteTask = async (id, project) => {
+    try {
+      const results = await axiosClient.delete(
+        `/api/tasks/${id}`, {params: {project}}
+      );
+      
+      dispatch({
+        type: DELETE_TASK,
+        payload: id
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  //marcar tarea como terminada
-  const completedTask = task => {
-    dispatch({
-      type: TASK_STATE,
-      payload: task
-    });
-  };
   //EDITA MODIFICA TAREA
-  const editTask = task => {
-    dispatch({
-      type: EDIT_TASK,
-      payload: task
-    });
+  const editTask = async task => {
+    try {
+      const results = await axiosClient.put(`/api/tasks/${task._id}`, task)
+      dispatch({
+        type: EDIT_TASK,
+        payload: results.data.currentTask
+      });
+    } catch (error) {
+      console.log(error)
+    }
   };
+
+  //borra selectedtask
+  const clearTask = () => {
+    dispatch({
+      type: CLEAR_TASK
+    })
+  }
 
   return (
     <TasksContext.Provider
       value={{
-        tasks: state.tasks,
         projecttasks: state.projecttasks,
         taskerror: state.taskerror,
         taskstate: state.taskstate,
@@ -119,9 +109,9 @@ const TasksState = props => {
         createTask,
         validateTask,
         deleteTask,
-        completedTask,
         actualTask,
-        editTask
+        editTask,
+        clearTask
       }}
     >
       {props.children}

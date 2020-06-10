@@ -16,12 +16,11 @@ const TasksList = () => {
   if (!project) return <h2>Pick a project</h2>;
   //array destructuring para extraer el proyecto actual
   const [openProject] = project;
-  
   return (
     <Fragment>
-      <h1>Proyecto: {openProject.name}</h1>
+      <h1>Project: {openProject.name}</h1>
       <ul className="listado-tareas">
-        {projecttasks === null ? (
+        {projecttasks === [] || undefined ? (
           <li className="tarea">
             <p>No tasks yet</p>
           </li>
@@ -40,7 +39,7 @@ const TasksList = () => {
         <button
           type="button"
           className="btn btn-primario"
-          onClick={() => deleteProject(openProject.id)}
+          onClick={() => deleteProject(openProject._id)}
         >
           Delete Project
         </button>

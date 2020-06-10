@@ -1,7 +1,24 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { Link, withRouter } from "react-router-dom";
+import AlertContext from "../../context/alerts/AlertContext";
+import AuthContext from "../../context/auth/authContext";
 
-const Login = () => {
+const Login = props => {
+  //extraer valores del context
+  const alertContext = useContext(AlertContext);
+  const { alert, showAlert } = alertContext;
+  const authContext = useContext(AuthContext);
+  const { mesage, auth, logIn } = authContext;
+  //si el usuario se haya registrado o esté repetido
+  useEffect(() => {
+    if (auth) {
+      props.history.push("/projects");
+    }
+    if (mesage) {
+      showAlert(mesage.msg, mesage.category);
+    }
+    //eslint-disable-next-line
+  }, [mesage, auth, props.history]);
   //state for login
   const [user, setUser] = useState({
     email: "",
@@ -20,9 +37,14 @@ const Login = () => {
   const onSubmit = event => {
     event.preventDefault();
     //validar que no haya campos vacios
-
+    if (email.trim() === "" || password.trim() === "") {
+      showAlert("You must fill every field", "alerta-error");
+      return;
+    }
     //pasar al action
+    logIn({ email, password });
   };
+
   return (
     <div className="form-usuario">
       <div className="contenedor-form sombra-dark">
@@ -50,6 +72,9 @@ const Login = () => {
               onChange={onChange}
             />
           </div>
+          {alert ? (
+            <div className={`alerta ${alert.category}`}>{alert.msg}</div>
+          ) : null}
           <div className="campo-form">
             <input
               type="submit"
@@ -66,4 +91,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default withRouter(Login);

@@ -9,13 +9,13 @@ const Task = ({ task }) => {
   const { project } = projectsContext;
   //obtener funcion del context de tasks
   const taskContext = useContext(TasksContext);
-  const { deleteTask, getTasks, completedTask, actualTask } = taskContext;
+  const { deleteTask, getTasks, editTask, actualTask } = taskContext;
   //destructuring
   const [actualProject] = project;
   //funcion para eliminar tarea
   const selectedTask = id => {
-    deleteTask(id); //id de la tarea
-    getTasks(actualProject.id); //id del proyecto
+    deleteTask(id, actualProject._id); //id de la tarea
+    getTasks(actualProject._id); //id del proyecto
   };
 
   //cambiar estado de tarea
@@ -25,12 +25,12 @@ const Task = ({ task }) => {
     } else {
       task.state = true;
     }
-    completedTask(task)
+    editTask(task);
   };
   //agrega tarea actual cuando el usuario quiere editarla
-  const editTask = (task) => {
-    actualTask(task)
-  }
+  const selectTask = task => {
+    actualTask(task);
+  };
   return (
     <li className="tarea sombra">
       <p>{task.name}</p>
@@ -54,13 +54,17 @@ const Task = ({ task }) => {
         )}
       </div>
       <div className="acciones">
-        <button onClick={() => editTask(task)} type="button" className="btn btn-primario">
+        <button
+          onClick={() => selectTask(task)}
+          type="button"
+          className="btn btn-primario"
+        >
           Edit
         </button>
         <button
           type="button"
           className="btn btn-secundario"
-          onClick={() => selectedTask(task.id)}
+          onClick={() => selectedTask(task._id)}
         >
           Delete
         </button>

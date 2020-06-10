@@ -1,13 +1,14 @@
+//importo types para el switch
 import {
   PROJECT_TASKS,
   CREATE_TASK,
   VALIDATE_TASK,
   DELETE_TASK,
-  TASK_STATE,
   ACTUAL_TASK,
-  EDIT_TASK
+  EDIT_TASK,
+  CLEAR_TASK
 } from "../../types";
-
+//creo un switch para cada case, al caer en uno actualiza states iniciales.
 export default (state, action) => {
   switch (action.type) {
     case PROJECT_TASKS:
@@ -19,7 +20,7 @@ export default (state, action) => {
       return {
         ...state,
         taskerror: false,
-        tasks: [action.payload, ...state.tasks]
+        // projecttasks: [action.payload, ...state.projecttasks]
       };
     case VALIDATE_TASK:
       return {
@@ -29,12 +30,7 @@ export default (state, action) => {
     case DELETE_TASK:
       return {
         ...state,
-        tasks: state.tasks.filter(task => task.id !== action.payload)
-      };
-    case TASK_STATE:
-      return {
-        ...state,
-        taskstate: true
+        projecttasks: state.projecttasks.filter(task => task._id !== action.payload)
       };
     case ACTUAL_TASK:
       return {
@@ -44,11 +40,16 @@ export default (state, action) => {
     case EDIT_TASK:
       return {
         ...state,
-        tasks: state.tasks.map(task =>
-          task.id === action.payload.id ? action.payload : task
+        projecttasks: state.projecttasks.map(task =>
+          task._id === action.payload._id ? action.payload : task
         ),
         selectedtask: null
       };
+      case CLEAR_TASK:
+        return{
+          ...state,
+          selectedtask: null
+        }
     default:
       return state;
   }

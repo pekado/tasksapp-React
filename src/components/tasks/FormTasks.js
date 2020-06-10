@@ -16,7 +16,8 @@ const FormTasks = () => {
     taskerror,
     getTasks,
     selectedtask,
-    editTask
+    editTask,
+    clearTask
   } = taskContext;
 
   //effect detecta tarea seleccionada
@@ -49,32 +50,35 @@ const FormTasks = () => {
       [e.target.name]: e.target.value
     });
   };
-  const onSubmit = event => {
-    event.preventDefault();
-    //validar
-    if (name.trim() === "") {
-      validateTask();
-      return;
+  const onSubmit = async event => {
+    try {
+      event.preventDefault();
+      //validar
+      if (name.trim() === "") {
+        validateTask();
+        return;
+      }
+      //revisar si edita o agrega tarea
+      if (selectedtask == null) {
+        //agregar la nueva taraea
+        task.project = openProject._id;
+        createTask(task);
+      } else {
+        //actualiza tarea existente
+        editTask(task);
+        clearTask();
+      }
+      //obtener y filtrar tareas
+      //resetear form
+      setTask({
+        name: ""
+      });
+      setTimeout(() => {
+        getTasks(openProject._id);
+      }, 1000);
+    } catch (error) {
+      console.log(error);
     }
-    //revisar si edita o agrega tarea
-    if (selectedtask == null) {
-      //agregar la nueva taraea
-      task.projectId = openProject.id;
-      task.state = false;
-      createTask(task);
-    } else {
-      //actualiza tarea existente
-      editTask(task);
-    }
-    //obtener y filtrar tareas
-    setTimeout(() => {
-      getTasks(openProject.id);
-    }, 2000);
-    
-    //resetear form
-    setTask({
-      name: ""
-    });
   };
   return (
     <div className="formulario">

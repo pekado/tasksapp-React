@@ -1,19 +1,26 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import Sidebar from "../layout/Sidebar";
-import Nav from "../layout/Nav";
 import FormTasks from "../tasks/FormTasks";
 import TasksList from "../tasks/TasksList";
+import AuthContext from "../../context/auth/authContext";
 
 const Projects = () => {
+  //extraer info de auth
+  const authContext = useContext(AuthContext);
+  const { userAuth } = authContext;
+
+  useEffect(() => {
+    userAuth();
+    //eslint-disable-next-line
+  }, []);
   return (
     <div className="contenedor-app">
       <Sidebar />
       <div className="seccion-principal">
-        <Nav />
         <main>
-        <FormTasks/>
+          <FormTasks />
           <div className="contenedor-tareas">
-              <TasksList/>
+            <TasksList />
           </div>
         </main>
       </div>

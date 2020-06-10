@@ -1,4 +1,5 @@
 import {
+  PROJECT_ERROR,
   FORM_PROJECT,
   GET_PROJECTS,
   ADD_PROJECT,
@@ -34,15 +35,22 @@ export default (state, action) => {
       return {
         ...state,
         project: state.projects.filter(
-          project => project.id === action.payload
+          project => project._id === action.payload
         )
       };
-      case DELETE_PROJECT:
-          return{
-              ...state,
-              projects: state.projects.filter(project => project.id !== action.payload),
-              project: null
-          }
+    case DELETE_PROJECT:
+      return {
+        ...state,
+        projects: state.projects.filter(
+          project => project._id !== action.payload
+        ),
+        project: null
+      };
+      case PROJECT_ERROR:
+        return{
+          ...state,
+          message: action.payload
+        }
     default:
       return state;
   }

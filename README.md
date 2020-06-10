@@ -1,1 +1,1 @@
-MERN app. In deployment.
+MERN app. In development.
