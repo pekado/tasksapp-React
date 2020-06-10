@@ -28,19 +28,21 @@ const TasksState = props => {
   //obtener tareas de un proyecto
   const getTasks = async project => {
     try {
-      const results = await axiosClient.get("/api/tasks", { params: { project}});
+      const results = await axiosClient.get("/api/tasks", {
+        params: { project }
+      });
       dispatch({
         type: PROJECT_TASKS,
         payload: results.data.tasks
       });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
   //crear tarea al proyecto
   const createTask = async task => {
     try {
-      const results = await axiosClient.post("/api/tasks", task);
+      await axiosClient.post("/api/tasks", task);
       dispatch({
         type: CREATE_TASK,
         payload: task
@@ -65,10 +67,8 @@ const TasksState = props => {
   //eliminar tarea por id
   const deleteTask = async (id, project) => {
     try {
-      const results = await axiosClient.delete(
-        `/api/tasks/${id}`, {params: {project}}
-      );
-      
+      await axiosClient.delete(`/api/tasks/${id}`, { params: { project } });
+
       dispatch({
         type: DELETE_TASK,
         payload: id
@@ -81,13 +81,13 @@ const TasksState = props => {
   //EDITA MODIFICA TAREA
   const editTask = async task => {
     try {
-      const results = await axiosClient.put(`/api/tasks/${task._id}`, task)
+      const results = await axiosClient.put(`/api/tasks/${task._id}`, task);
       dispatch({
         type: EDIT_TASK,
         payload: results.data.currentTask
       });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -95,8 +95,8 @@ const TasksState = props => {
   const clearTask = () => {
     dispatch({
       type: CLEAR_TASK
-    })
-  }
+    });
+  };
 
   return (
     <TasksContext.Provider

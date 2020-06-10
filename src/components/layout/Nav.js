@@ -3,7 +3,7 @@ import AuthContext from "../../context/auth/authContext";
 
 const Nav = () => {
   const authContext = useContext(AuthContext);
-  const { userAuth, user, logOut } = authContext;
+  const { userAuth, user } = authContext;
 
   useEffect(() => {
     userAuth();

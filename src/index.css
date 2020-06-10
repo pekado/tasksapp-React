@@ -101,7 +101,7 @@ a {
 }
 
 .project {
-  font-size: 23px;
+  font-size: 20px;
   margin: 0 auto;
   text-transform: uppercase;
   letter-spacing: 0.256em;
@@ -128,6 +128,9 @@ a {
   .seccion-principal {
     flex: 1;
   }
+  .campo-form{
+    display: block;
+  }
 }
 
 /* BARRA LATERAL */
@@ -145,8 +148,8 @@ aside {
 }
 .formulario-nuevo-proyecto .input-text {
   border-bottom: 1px solid var(--gris2);
-  border-radius: 0;
-  background-color: var(--gris1);
+  border-radius: 0.5rem;
+
 }
 .formulario-nuevo-proyecto .input-text::placeholder {
   color: var(--gris2);
@@ -166,6 +169,7 @@ aside {
 .app-header {
   justify-content: space-between;
   padding: 4rem;
+  text-align: center;
 }
 .nombre-usuario {
   color: whitesmoke;
@@ -380,4 +384,12 @@ aside {
 .alerta-error {
   background-color: rgb(170, 0, 0);
   color: rgba(42, 42, 46, 1);
+}
+@media only screen and (max-width: 600px){
+  .campo-form{
+    display: block;
+  }
+  .campo-form input{
+    margin: 1rem;
+  }
 }
